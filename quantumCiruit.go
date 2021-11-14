@@ -1,8 +1,10 @@
 package GoDel
 
 import (
+	"errors"
 	"fmt"
 	"gonum.org/v1/gonum/mat"
+	"log"
 )
 
 type Gate struct {
@@ -10,25 +12,42 @@ type Gate struct {
 	matrix mat.Matrix
 }
 type QuantumCircuit struct {
-	gates []Gate
-	qubits int
+	Gates []Gate
+	Qubits int
 }
 
-// h
+// TODO matrix H
+// find a way to make matrix contrauctions short
 var preHData = make([]float64, 4)
-var HData = [4]float64{1, 1, 1, -1}
+var hData = [4]float64{1, 1, 1, -1}
 
 var H = mat.NewDense(2, 2, preHData)
+// end of h
 
-// x
+// TODO matrix x
+// find a way to make matrix contrauctions short
 
-func init() {
-	for i := range HData {
-		fmt.Println(HData[i])
-		preHData[i] = HData[i]
+
+// end of x
+
+
+func init() { // init method to set up everything in the package
+	for i := range hData {
+		preHData[i] = hData[i]
 	}
 }
-func (qc QuantumCircuit) ApplyGate(gate mat.Matrix, qubit int) {
+
+func (qc *QuantumCircuit) ApplyGate(gate mat.Matrix, qubit int) {
+	if qubit > qc.Qubits{
+		err := errors.New("qubit: qubit out of range for  the circuit")
+		log.Println(err)
+		return
+	}
 	var newGate = Gate{qubit: qubit, matrix: gate}
-	qc.gates = append(qc.gates, newGate)
+	qc.Gates = append(qc.Gates, newGate)
+}
+
+func (qc *QuantumCircuit) GetQubits() int{
+	fmt.Println(qc)
+	return qc.Qubits
 }
