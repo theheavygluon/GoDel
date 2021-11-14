@@ -38,7 +38,7 @@ func init() { // init method to set up everything in the package
 }
 
 func (qc *QuantumCircuit) ApplyGate(gate mat.Matrix, qubit int) {
-	if qubit > qc.Qubits{
+	if qubit >= qc.Qubits{
 		err := errors.New("qubit: qubit out of range for  the circuit")
 		log.Println(err)
 		return
