@@ -7,10 +7,10 @@ import (
 
 type Gate struct {
 	qubit  int
-	matrix mat.Dense
+	matrix mat.Matrix
 }
 type QuantumCircuit struct {
-	gataes []Gate
+	gates []Gate
 	qubits int
 }
 
@@ -28,7 +28,7 @@ func init() {
 		preHData[i] = HData[i]
 	}
 }
-func (qc QuantumCircuit) ApplyGate(gate mat.Dense, qubit int) {
+func (qc QuantumCircuit) ApplyGate(gate mat.Matrix, qubit int) {
 	var newGate = Gate{qubit: qubit, matrix: gate}
-	qc.gataes = append(qc.gataes, newGate)
+	qc.gates = append(qc.gates, newGate)
 }
