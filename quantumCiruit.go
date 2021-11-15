@@ -24,16 +24,38 @@ var hData = [4]float64{1, 1, 1, -1}
 var H = mat.NewDense(2, 2, preHData)
 // end of h
 
-// TODO matrix x
+// TODO matrix X
 // find a way to make matrix contrauctions short
 
+var preXData = make([]float64, 4)
+var xData = [4]float64{0, 1, 1, 0}
+
+var X = mat.NewDense(2, 2, preXData)
 
 // end of x
 
+// TODO matrix Z
+// find a way to make matrix contrauctions short
+var preZData = make([]float64, 4)
+var zData = [4]float64{1, 0, 0, -1}
 
-func init() { // init method to set up everything in the package
+var Z = mat.NewDense(2, 2, preZData)
+
+// end of z
+
+func init() {
+	// init method to set up everything in the package
+	// adding real values to H
 	for i := range hData {
 		preHData[i] = hData[i]
+	}
+	// adding real values to X
+	for i := range xData {
+		preXData[i] = xData[i]
+	}
+	// adding real values to Z
+	for i := range zData {
+		preZData[i] = zData[i]
 	}
 }
 

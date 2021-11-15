@@ -7,8 +7,10 @@ import (
 )
 
 func main() {
-	var qc = GoDel.QuantumCircuit{Qubits: 2}
+	var qc = GoDel.QuantumCircuit{Qubits: 5}
 	qc.ApplyGate(GoDel.H, 1)
+	qc.ApplyGate(GoDel.Z, 2)
+	qc.ApplyGate(GoDel.X, 3)
 
 	//TODO
 	// find a way to make the matrix construction short
