@@ -7,7 +7,7 @@ import (
 
 func main() {
 	var qc = GoDel.QuantumCircuit{Qubits: 2}
-	qc.ApplyGate(GoDel.H, 0)
+	qc.ApplyGate(GoDel.H, []int{0,2}) // apply gate to multiple qubits (dont user int32 or int46) must use int
 	qc.ApplyGate(GoDel.Z, 1)
 	qc.ApplyGate(GoDel.X, 1)
 	qc.ApplyGate(GoDel.CN, 1)
