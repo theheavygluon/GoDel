@@ -20,7 +20,5 @@ func main() {
 		1, 1,
 	})
 	qc.ApplyGate(customMatrix, 1) // add custom matrix to the gates
-
 	// end here
-
 }
