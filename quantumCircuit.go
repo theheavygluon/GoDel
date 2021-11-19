@@ -8,8 +8,8 @@ import (
 	"reflect"
 )
 
-var zero = mat.NewVecDense(2, []float64{1,0})
-var one = mat.NewVecDense(2, []float64{0,1})
+var zero = mat.NewVecDense(2, []float64{1, 0})
+var one = mat.NewVecDense(2, []float64{0, 1})
 
 type Gate struct {
 	qubit  int
@@ -51,28 +51,45 @@ var Z = mat.NewDense(2, 2, []float64{1, 0, 0, -1})
 
 // end of z
 
-// CN create matrix CN (controled not gate)
-/*
-this will flip target qubit if controlled qubit is set to 1 else no change to target qubit
-*/
-var CN = mat.NewDense(4, 4, []float64{
+
+var C = []float64{
 	1, 0, 0, 0,
 	0, 1, 0, 0,
 	0, 0, 0, 1,
 	0, 0, 1, 0,
-})
+}
+// CN create matrix CN (controled not gate)
+/*
+this will flip target qubit if controlled qubit is set to 1 else no change to target qubit
+*/
+var CN = mat.NewDense(4, 4, C)
+var CX = mat.NewDense(4, 4, C)
+
+// View
+//  View, visualize matrix
+func View(matrix mat.Matrix) {
+	fmt.Println(mat.Formatted(matrix))
+
+}
 
 // end of CN
 
-// CXX
-/*craete a matrix CXX that also accepts inputs
- */
+// CXXUnirary
+
 func CXX(pie float64) mat.Matrix {
 	fmt.Println(pie)
 	return mat.NewDense(2, 2, []float64{1, 0, 0, -1})
 }
-
-func CX(numberQubits int, control int, target int) mat.Matrix {
+func tensor(initialState []mat.Matrix) mat.Matrix{
+	x := initialState[0]
+	y := initialState[1]
+	View(x)
+	View(y)
+	m := mat.Dense{}
+	m.Kronecker(x,y)
+	return &m
+}
+func CXUnitary(numberQubits int, control int, target int) mat.Matrix {
 	var left []mat.Matrix
 	var right []mat.Matrix
 	identity := mat.NewDense(2, 2, []float64{
@@ -84,22 +101,22 @@ func CX(numberQubits int, control int, target int) mat.Matrix {
 		right = append(right, identity)
 	}
 
-	transposedZero  := mat.TransposeVec{Vector: zero}
+	transposedZero := mat.TransposeVec{Vector: zero}
 	transposedOne := mat.TransposeVec{Vector: one}
-	leftControl := mat.NewDense(2,2, nil)
+	leftControl := mat.NewDense(2, 2, nil)
 	leftControl.Mul(zero, transposedZero)
-	rightControl :=  mat.NewDense(2,2, nil)
+	rightControl := mat.NewDense(2, 2, nil)
 	rightControl.Mul(one, transposedOne)
 
-	fmt.Println(transposedZero.Dims())
-	fmt.Println(zero.Dims())
-	fmt.Println(leftControl)
-	fmt.Println(rightControl)
-	//fmt.Println(leftControl)
 	left[control] = leftControl
 	right[control] = rightControl
 	right[target] = X
-	return identity
+	rightTensor := tensor(right)
+	leftTensor := tensor(left)
+	var m mat.Dense
+	m.Add(rightTensor, leftTensor)
+	return &m
+
 }
 
 func init() {
