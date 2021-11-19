@@ -11,6 +11,7 @@ func main() {
 	qc.ApplyGate(GoDel.Z, 1)
 	qc.ApplyGate(GoDel.X, 1)
 	qc.ApplyGate(GoDel.CN, 1)
+	qc.ApplyGate(GoDel.CX, 1)
 	qc.ApplyGate(GoDel.CXX(120), 1) // using matrix with other params
 	x := GoDel.CXUnitary(2,1,1) // using matrix with other params
 	GoDel.View(x)
@@ -23,7 +24,6 @@ func main() {
 		1, 1,
 	})
 	qc.ApplyGate(customMatrix, 1) // add custom matrix to the gates
-	GoDel.View(customMatrix) // visualize matrix
 	// end here
 
 }

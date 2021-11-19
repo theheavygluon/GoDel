@@ -69,7 +69,6 @@ var CX = mat.NewDense(4, 4, C)
 //  View, visualize matrix
 func View(matrix mat.Matrix) {
 	fmt.Println(mat.Formatted(matrix))
-
 }
 
 // end of CN
@@ -77,14 +76,11 @@ func View(matrix mat.Matrix) {
 // CXXUnirary
 
 func CXX(pie float64) mat.Matrix {
-	fmt.Println(pie)
 	return mat.NewDense(2, 2, []float64{1, 0, 0, -1})
 }
 func tensor(initialState []mat.Matrix) mat.Matrix{
 	x := initialState[0]
 	y := initialState[1]
-	View(x)
-	View(y)
 	m := mat.Dense{}
 	m.Kronecker(x,y)
 	return &m
