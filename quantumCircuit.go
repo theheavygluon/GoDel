@@ -8,8 +8,11 @@ import (
 	"reflect"
 )
 
+var zero = mat.NewVecDense(2, []float64{1,0})
+var one = mat.NewVecDense(2, []float64{0,1})
+
 type Gate struct {
-	qubit  interface{}
+	qubit  int
 	matrix mat.Matrix
 }
 type QuantumCircuit struct {
@@ -43,6 +46,7 @@ var X = mat.NewDense(2, 2, []float64{
 /*
 	matrix z
 */
+
 var Z = mat.NewDense(2, 2, []float64{1, 0, 0, -1})
 
 // end of z
@@ -68,39 +72,80 @@ func CXX(pie float64) mat.Matrix {
 	return mat.NewDense(2, 2, []float64{1, 0, 0, -1})
 }
 
+func CX(numberQubits int, control int, target int) mat.Matrix {
+	var left []mat.Matrix
+	var right []mat.Matrix
+	identity := mat.NewDense(2, 2, []float64{
+		1, 0,
+		0, 1,
+	})
+	for i := 0; i < numberQubits; i++ {
+		left = append(left, identity)
+		right = append(right, identity)
+	}
+
+	transposedZero  := mat.TransposeVec{Vector: zero}
+	transposedOne := mat.TransposeVec{Vector: one}
+	leftControl := mat.NewDense(2,2, nil)
+	leftControl.Mul(zero, transposedZero)
+	rightControl :=  mat.NewDense(2,2, nil)
+	rightControl.Mul(one, transposedOne)
+
+	fmt.Println(transposedZero.Dims())
+	fmt.Println(zero.Dims())
+	fmt.Println(leftControl)
+	fmt.Println(rightControl)
+	//fmt.Println(leftControl)
+	left[control] = leftControl
+	right[control] = rightControl
+	right[target] = X
+	return identity
+}
+
 func init() {
 	H.Scale(1/math.Sqrt(2), H) // scale H by (1 / sqrt(2))
 }
 
-//ApplyGate
-/*
- applyGate contructs a gate, accepts(matrix for the gate and also qubit to apply to )
-if the qubit specified is our of range the program will panic
+func addQubits(qbt int, gate mat.Matrix) Gate {
+	var newGate = Gate{qubit: qbt, matrix: gate}
+	return newGate
+}
 
-if appllying gate to multilple qubits then pass the qubits as array eample: `[]int32{0,1}` will aplly gate to qubit index 0 and 1
+// ApplyGate
+/* ApplyGate contructs a gate, accepts(matrix for the gate and also qubit to apply to )
+if the qubit specified is out of range the program will panic
+
+if appllying gate to multilple qubits then pass the qubits as SCLICE
+example:
+
+ApplyGate(H,[]int{0,1})
+
+will aplly gate H to qubit index 0 and 1
 */
-
 func (qc *QuantumCircuit) ApplyGate(gate mat.Matrix, qubit interface{}) {
 	switch reflect.TypeOf(qubit).Kind() {
 	case reflect.Slice:
 		s := reflect.ValueOf(qubit)
-
 		for i := 0; i < s.Len(); i++ {
-			y := s.Index(i).Interface().(int)
-			if y >= qc.Qubits {
+			qbt := s.Index(i).Interface().(int)
+			if qbt >= qc.Qubits || qbt < 0 {
 				err := errors.New("Qubits: qubit out of range for  the circuit")
 				panic(err)
 			}
-			var newGate = Gate{qubit: s.Index(i), matrix: gate}
+			newGate := addQubits(qbt, gate)
 			qc.Gates = append(qc.Gates, newGate)
 		}
 	case reflect.Int:
 		s := reflect.ValueOf(qubit)
-		if s.Interface().(int) >= qc.Qubits {
+		qbt := s.Interface().(int)
+		if qbt >= qc.Qubits || qbt < 0 {
 			err := errors.New("Qubits: qubit out of range for  the circuit")
 			panic(err)
 		}
-		var newGate = Gate{qubit: s, matrix: gate}
+		newGate := addQubits(qbt, gate)
 		qc.Gates = append(qc.Gates, newGate)
+	default:
+		err := errors.New("Qubits: wrong data type for the qubit")
+		panic(err)
 	}
 }

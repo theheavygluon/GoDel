@@ -7,13 +7,16 @@ import (
 
 func main() {
 	var qc = GoDel.QuantumCircuit{Qubits: 2}
-	qc.ApplyGate(GoDel.H, []int{0,2}) // apply gate to multiple qubits (dont user int32 or int46) must use int
+	qc.ApplyGate(GoDel.H, []int{1,0}) // apply gate to multiple qubits (dont use int32 or int64, etc...) must use int datatype
 	qc.ApplyGate(GoDel.Z, 1)
 	qc.ApplyGate(GoDel.X, 1)
 	qc.ApplyGate(GoDel.CN, 1)
 	qc.ApplyGate(GoDel.CXX(120), 1) // using matrix with other params
+	qc.ApplyGate(GoDel.CX(2,1,1), 1) // using matrix with other params
 
-	//create custom matrix and add to gates
+
+	// customMatrix
+	//customMatrix create custom matrix and add to gates
 	customMatrix := mat.NewDense(3, 2, []float64{
 		1, 1,
 		1, 1,
@@ -21,4 +24,5 @@ func main() {
 	})
 	qc.ApplyGate(customMatrix, 1) // add custom matrix to the gates
 	// end here
+
 }
